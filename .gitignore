@@ -1,0 +1,11 @@
+# Personal application data — kept local, not committed
+applications.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
