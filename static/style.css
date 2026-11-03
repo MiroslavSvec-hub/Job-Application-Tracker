@@ -27,7 +27,7 @@ body {
 h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
 .sub { color: var(--ink-soft); font-size: 14px; margin: 0 0 28px; }
 .sub code { background: var(--gray-bg); padding: 1px 5px; border-radius: 4px; }
-.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px; }
+.stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 28px; }
 .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 .stat .num { font-size: 22px; font-weight: 600; font-family: "SF Mono", "Consolas", monospace; }
 .stat .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -60,6 +60,7 @@ button:hover { background: var(--gray-bg); }
 .card.status-applied { border-left-color: var(--muted); background: var(--gray-bg); }
 .card.status-screening { border-left-color: var(--amber); background: var(--amber-bg); }
 .card.status-interview { border-left-color: var(--amber); background: var(--amber-bg); }
+.card.status-waiting { border-left-color: var(--teal); background: var(--teal-bg); }
 .card.status-offer { border-left-color: var(--green); background: var(--green-bg); }
 .card.status-rejected { border-left-color: var(--red); background: var(--red-bg); }
 .card.status-withdrawn { border-left-color: var(--muted); background: var(--gray-bg); }
@@ -76,6 +77,7 @@ button:hover { background: var(--gray-bg); }
 .badge.status-applied { background: var(--gray-bg); color: var(--ink-soft); }
 .badge.status-screening { background: var(--amber-bg); color: var(--amber); }
 .badge.status-interview { background: var(--amber-bg); color: var(--amber); }
+.badge.status-waiting { background: var(--teal-bg); color: var(--teal); }
 .badge.status-offer { background: var(--green-bg); color: var(--green); }
 .badge.status-rejected { background: var(--red-bg); color: var(--red); }
 .badge.status-withdrawn { background: var(--gray-bg); color: var(--muted); }
