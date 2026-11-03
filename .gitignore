@@ -1,5 +1,6 @@
 # Personal application data — kept local, not committed
 applications.csv
+documents/
 
 # Python
 __pycache__/

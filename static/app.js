@@ -66,7 +66,38 @@ async function updateApplication(id, payload) {
   }
 }
 
+async function uploadDocuments(id, files) {
+  const form = new FormData();
+  Array.from(files).forEach(f => form.append('files', f));
+  const res = await fetch('/api/applications/' + id + '/documents', { method: 'POST', body: form });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || (res.status === 413 ? 'Files are too large (max 50 MB per upload).' : 'Failed to upload documents.'));
+  }
+}
+
+async function deleteDocument(id, filename) {
+  if (!confirm('Delete document "' + filename + '"?')) return;
+  try {
+    const res = await fetch(documentUrl(id, filename), { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete document.');
+    const data = await res.json();
+    const app = applications.find(a => a.id === id);
+    if (app) app.documents = data.documents;
+    render();
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+function documentUrl(id, filename) {
+  return '/api/applications/' + id + '/documents/' + encodeURIComponent(filename);
+}
+
 async function deleteApplication(id) {
+  const app = applications.find(a => a.id === id);
+  const docCount = app && app.documents ? app.documents.length : 0;
+  if (docCount && !confirm('Delete this application and its ' + docCount + ' document(s)?')) return;
   try {
     const res = await fetch('/api/applications/' + id, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete application.');
@@ -134,12 +165,23 @@ function render() {
       '</div>' +
       (a.matchReason ? '<div class="notes match-reason"><strong>Match:</strong> ' + escapeHtml(a.matchReason) + '</div>' : '') +
       (a.notes ? '<div class="notes">' + escapeHtml(a.notes) + '</div>' : '') +
+      documentsHtml(a) +
       '<div class="card-actions">' +
         '<button onclick="editApplication(\'' + a.id + '\')">Edit</button>' +
         '<button onclick="deleteApplication(\'' + a.id + '\')">Delete</button>' +
       '</div>' +
     '</div>';
   }).join('');
+}
+
+function documentsHtml(a) {
+  if (!a.documents || a.documents.length === 0) return '';
+  return '<div class="docs">' + a.documents.map(name =>
+    '<span class="doc">' +
+      '<a href="' + documentUrl(a.id, name) + '" target="_blank" rel="noopener">' + escapeHtml(name) + '</a>' +
+      '<button class="doc-remove" title="Delete document" onclick="deleteDocument(\'' + a.id + '\', \'' + escapeHtml(name) + '\')">&times;</button>' +
+    '</span>'
+  ).join('') + '</div>';
 }
 
 function applicationAgeHtml(dateStr) {
@@ -186,6 +228,7 @@ function clearForm() {
   document.getElementById('f-salary').value = '';
   document.getElementById('f-link').value = '';
   document.getElementById('f-notes').value = '';
+  document.getElementById('f-docs').value = '';
   document.getElementById('form-title').textContent = 'Add application';
   document.getElementById('save-btn').textContent = 'Add application';
   document.getElementById('cancel-btn').style.display = 'none';
@@ -204,6 +247,7 @@ function editApplication(id) {
   document.getElementById('f-salary').value = app.salary || '';
   document.getElementById('f-link').value = app.link || '';
   document.getElementById('f-notes').value = app.notes || '';
+  document.getElementById('f-docs').value = '';
   document.getElementById('form-title').textContent = 'Edit application';
   document.getElementById('save-btn').textContent = 'Save changes';
   document.getElementById('cancel-btn').style.display = 'inline-block';
@@ -228,12 +272,16 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     notes: document.getElementById('f-notes').value.trim()
   };
 
+  const files = document.getElementById('f-docs').files;
+
   try {
+    let id = editId;
     if (editId) {
       await updateApplication(editId, payload);
     } else {
-      await createApplication(payload);
+      id = (await createApplication(payload)).id;
     }
+    if (files.length) await uploadDocuments(id, files);
     clearError();
     clearForm();
     await loadAll();

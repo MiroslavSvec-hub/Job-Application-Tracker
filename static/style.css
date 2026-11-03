@@ -89,6 +89,17 @@ button:hover { background: var(--gray-bg); }
 }
 .notes { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
 .match-reason strong { font-weight: 600; color: var(--ink); }
+.docs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.doc {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px 2px 8px;
+}
+.doc a { text-decoration: none; }
+.doc a:hover { text-decoration: underline; }
+.doc-remove {
+  border: none; background: none; padding: 0 4px; font-size: 14px; line-height: 1; color: var(--muted);
+}
+.doc-remove:hover { background: none; color: var(--red); }
 .card-actions { display: flex; gap: 6px; margin-top: 10px; }
 .card-actions button { font-size: 12px; padding: 5px 10px; }
 .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }

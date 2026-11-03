@@ -14,6 +14,8 @@ at any time if you want to look at or back up the raw data.
   strong matches stand out at a glance
 - **Reason for match quality** — a short note on why a role is or isn't a fit
 - Summary counts per status, filter by status, search by company or role
+- **Documents** — attach any number of files (job description, CV, cover
+  letter...) to an application; they're listed on its card and open in a new tab
 - "Applied X days ago" indicator that turns orange after 2 weeks and red
   after a month
 
@@ -43,8 +45,10 @@ Then open **http://127.0.0.1:5000** in your browser.
   application — you don't need to create it yourself.
 - Stopping the server (Ctrl+C) doesn't lose any data — everything is
   already saved to the CSV file as you go.
-- `applications.csv` is listed in `.gitignore`, so your personal data is
-  never committed to the repository.
+- Uploaded documents are saved in `documents/<application id>/` (max 50 MB
+  per upload). Deleting an application also deletes its documents folder.
+- `applications.csv` and `documents/` are listed in `.gitignore`, so your
+  personal data is never committed to the repository.
 
 ## CSV columns
 
@@ -68,6 +72,7 @@ job_tracker/
 ├── app.py              Flask server + CSV read/write logic
 ├── requirements.txt
 ├── applications.csv    Created automatically on first save (git-ignored)
+├── documents/          Uploaded files, one subfolder per application (git-ignored)
 ├── templates/
 │   └── index.html
 └── static/

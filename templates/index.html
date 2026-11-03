@@ -8,7 +8,7 @@
 <body>
 <div class="wrap">
   <h1>Job application tracker</h1>
-  <p class="sub">Track applications, statuses, and next actions — saved to <code>applications.csv</code>.</p>
+  <p class="sub">Track applications, statuses, and next actions — saved to <code>applications.csv</code>, documents in <code>documents/</code>.</p>
 
   <div class="stats" id="stats"></div>
 
@@ -68,6 +68,10 @@
     <div class="field">
       <label>Notes / next action</label>
       <textarea id="f-notes" placeholder="e.g. Follow up 1 week after applying"></textarea>
+    </div>
+    <div class="field">
+      <label>Documents (job description, CV, cover letter...)</label>
+      <input id="f-docs" type="file" multiple>
     </div>
     <div style="display:flex; gap:8px;">
       <button class="btn-primary" id="save-btn">Add application</button>
