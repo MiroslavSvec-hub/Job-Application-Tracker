@@ -1,7 +1,7 @@
 let applications = [];
 
 function statusLabel(s) {
-  const map = { applied: 'Applied', screening: 'Screening', interview: 'Interview', waiting: 'Waiting to hear back', offer: 'Offer', rejected: 'Rejected', withdrawn: 'Withdrawn' };
+  const map = { applied: 'Applied', screening: 'Screening', technical: 'Technical interview', final: 'Last stage interview', waiting: 'Waiting to hear back', offer: 'Offer', rejected: 'Rejected', withdrawn: 'Withdrawn' };
   return map[s] || s;
 }
 
@@ -109,10 +109,10 @@ async function deleteApplication(id) {
 }
 
 function renderStats() {
-  const counts = { applied: 0, screening: 0, interview: 0, waiting: 0, offer: 0, rejected: 0 };
+  const counts = { applied: 0, screening: 0, technical: 0, final: 0, waiting: 0, offer: 0, rejected: 0 };
   applications.forEach(a => { if (counts[a.status] !== undefined) counts[a.status]++; });
   const statsEl = document.getElementById('stats');
-  statsEl.innerHTML = ['applied', 'screening', 'interview', 'waiting', 'offer', 'rejected'].map(s =>
+  statsEl.innerHTML = ['applied', 'screening', 'technical', 'final', 'waiting', 'offer', 'rejected'].map(s =>
     '<div class="stat"><div class="num">' + counts[s] + '</div><div class="label">' + statusLabel(s) + '</div></div>'
   ).join('');
 }
@@ -138,7 +138,7 @@ function render() {
     if (s === 'rejected') return 3;
     if (s === 'withdrawn') return 2;
     if (s === 'applied') return 1;
-    return 0; // screening, interview, waiting, offer
+    return 0; // screening, technical, final, waiting, offer
   };
   filtered.sort((a, b) => {
     const tierDiff = statusTier(a.status) - statusTier(b.status);

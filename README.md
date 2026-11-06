@@ -8,7 +8,7 @@ at any time if you want to look at or back up the raw data.
 ## Features
 
 - Add, edit and delete applications
-- Status tracking (Applied, Screening, Interview, Waiting to hear back, Offer, Rejected, Withdrawn)
+- Status tracking (Applied, Screening, Technical interview, Last stage interview, Waiting to hear back, Offer, Rejected, Withdrawn)
   with colour-coded cards and badges
 - **Match quality** (Low / Medium / Strong) shown as a coloured badge, so
   strong matches stand out at a glance
@@ -58,7 +58,7 @@ Then open **http://127.0.0.1:5000** in your browser.
 | `company`      | Required                                                           |
 | `role`         | Required                                                           |
 | `dateApplied`  | `YYYY-MM-DD`                                                       |
-| `status`       | `applied`, `screening`, `interview`, `waiting`, `offer`, `rejected`, `withdrawn` |
+| `status`       | `applied`, `screening`, `technical`, `final`, `waiting`, `offer`, `rejected`, `withdrawn` |
 | `matchQuality` | Optional: `low`, `medium`, `strong` (labels like `Strong match` also work) |
 | `matchReason`  | Optional free text                                                 |
 | `salary`       | Free text, e.g. `£60k–£65k`                                        |
