@@ -163,8 +163,8 @@ function render() {
         (a.salary ? '<span>' + escapeHtml(a.salary) + '</span>' : '') +
         (linkHtml ? '<span>' + linkHtml + '</span>' : '') +
       '</div>' +
-      (a.matchReason ? '<div class="notes match-reason"><strong>Match:</strong> ' + escapeHtml(a.matchReason) + '</div>' : '') +
-      (a.notes ? '<div class="notes">' + escapeHtml(a.notes) + '</div>' : '') +
+      (a.matchReason ? '<div class="notes match-reason"><strong>Match:</strong> ' + linkify(escapeHtml(a.matchReason)) + '</div>' : '') +
+      (a.notes ? '<div class="notes">' + formatNotes(a.notes) + '</div>' : '') +
       documentsHtml(a) +
       '<div class="card-actions">' +
         '<button onclick="editApplication(\'' + a.id + '\')">Edit</button>' +
@@ -209,6 +209,52 @@ function formatDate(dateStr) {
   const [year, month, day] = dateStr.split('-');
   if (!year || !month || !day) return dateStr;
   return day + '/' + month + '/' + year;
+}
+
+// Turn URLs in already-escaped text into clickable links.
+function linkify(escaped) {
+  return escaped.replace(/\b(https?:\/\/[^\s<]+|www\.[^\s<]+)/gi, function (url) {
+    // Keep trailing punctuation out of the link
+    let trail = '';
+    const m = url.match(/[.,;:!?)\]'"]+$/);
+    if (m) { trail = m[0]; url = url.slice(0, -trail.length); }
+    const href = /^www\./i.test(url) ? 'http://' + url : url;
+    return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + url + '</a>' + trail;
+  });
+}
+
+// Bold dates like "4 Nov 2026", "4 Nov 2026:" or "4 Nov 2026 (17:33):" in escaped text.
+function boldDates(escaped) {
+  return escaped.replace(
+    /\b\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4}(?: \(\d{1,2}:\d{2}\))?:?/g,
+    '<strong>$&</strong>'
+  );
+}
+
+// Render notes text: blank lines -> paragraphs, "- " / "* " lines -> bullet lists,
+// other line breaks preserved, URLs clickable.
+function formatNotes(text) {
+  const blocks = String(text || '').replace(/\r\n?/g, '\n').trim().split(/\n\s*\n/);
+  return blocks.map(function (block) {
+    const lines = block.split('\n');
+    let html = '';
+    let para = [];
+    let list = [];
+    const flushPara = function () {
+      if (para.length) { html += '<p>' + para.map(function (l) { return boldDates(linkify(escapeHtml(l))); }).join('<br>') + '</p>'; para = []; }
+    };
+    const flushList = function () {
+      if (list.length) { html += '<ul>' + list.map(function (l) { return '<li>' + boldDates(linkify(escapeHtml(l))) + '</li>'; }).join('') + '</ul>'; list = []; }
+    };
+    lines.forEach(function (line) {
+      const m = line.match(/^\s*[-*•]\s+(.*)$/);
+      if (m) { flushPara(); list.push(m[1]); }
+      else { flushList(); para.push(line); }
+    });
+    flushPara();
+    flushList();
+    return html;
+  }).join('');
 }
 
 function escapeHtml(s) {
